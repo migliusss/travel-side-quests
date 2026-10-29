@@ -71,6 +71,8 @@ export interface Page<T> {
 }
 
 export interface SideQuestFilter {
+  /** Free text, matched against the name, description, destination and country. */
+  q?: string
   countryId?: number
   destinationId?: number
   categoryIds?: number[]

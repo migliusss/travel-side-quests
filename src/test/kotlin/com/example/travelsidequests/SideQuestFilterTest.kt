@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class SideQuestFilterTest : AbstractIntegrationTest() {
@@ -30,6 +31,30 @@ class SideQuestFilterTest : AbstractIntegrationTest() {
         mockMvc.perform(get("/api/v1/side-quests/filter").param("sourceTypeId", podcastTypeId.toString()))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.totalElements").value(0))
+    }
+
+    @Test
+    fun `free text searches the name, the description and the place`() {
+        assertEquals(listOf("Látrabjarg"), search("látrabjarg"))
+
+        // wording that only appears in the description
+        assertEquals(listOf("Patreksfjörður"), search("silent mountains"))
+
+        // the destination, and the country behind it
+        assertEquals(2, search("westfjords").size)
+        assertEquals(2, search("iceland").size)
+    }
+
+    @Test
+    fun `free text is matched case-insensitively and on partial words`() {
+        assertEquals(search("LÁTRABJARG"), search("látrabj"))
+    }
+
+    @Test
+    fun `wildcards in the search text are treated as literal characters`() {
+        // Unescaped, "%" would match every row.
+        assertTrue(search("%").isEmpty())
+        assertTrue(search("_").isEmpty())
     }
 
     @Test
@@ -65,6 +90,14 @@ class SideQuestFilterTest : AbstractIntegrationTest() {
 
         assertTrue(codes.size > 200, "expected the full ISO list, got ${codes.size}")
     }
+
+    private fun search(text: String): List<String> =
+        JsonPath.read(
+            mockMvc.perform(get("/api/v1/side-quests/filter").param("q", text))
+                .andExpect(status().isOk)
+                .andReturn().response.contentAsString,
+            "$.content[*].name"
+        )
 
     private fun sourceTypeId(name: String): Long {
         val body = mockMvc.perform(get("/api/v1/source-types"))

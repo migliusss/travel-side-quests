@@ -47,6 +47,9 @@ not touch the database in `compose.yaml`.
 
 - **`country` → `destination` → `side_quest`**, with categories (many-to-many), images and
   sources hanging off the side quest.
+- **The URL is the filter** on the browse page, so the home page's search box and its
+  category links are plain hrefs and any result list can be shared. Free text (`?q=`) is
+  matched against the name, the description, the destination and the country.
 - **Countries and categories are closed lists.** Countries are seeded from ISO 3166-1 and
   categories are curated, so a submitter picks from them rather than inventing entries that
   would show up in the public filters before anyone had approved anything.

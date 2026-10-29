@@ -18,7 +18,7 @@ export default function SideQuestPage() {
     return (
       <div className="rounded-2xl border border-dashed border-stone p-10 text-center">
         <p className="text-oxblood/60">That place is not here.</p>
-        <Link to="/" className="mt-3 inline-block text-sm font-semibold text-wine-600 hover:underline">
+        <Link to="/browse" className="mt-3 inline-block text-sm font-semibold text-wine-600 hover:underline">
           Back to browsing
         </Link>
       </div>
@@ -29,7 +29,7 @@ export default function SideQuestPage() {
 
   return (
     <article className="space-y-8">
-      <Link to="/" className="text-sm font-semibold text-wine-600 hover:underline">
+      <Link to="/browse" className="text-sm font-semibold text-wine-600 hover:underline">
         ← All side quests
       </Link>
 

@@ -108,7 +108,7 @@ export default function SubmitPage() {
           goes live, so it will not show up on the site just yet.
         </p>
         <div className="mt-6 flex justify-center gap-3">
-          <Link to="/" className="btn-ghost">
+          <Link to="/browse" className="btn-ghost">
             Back to browsing
           </Link>
           <button type="button" className="btn-primary" onClick={() => submit.reset()}>

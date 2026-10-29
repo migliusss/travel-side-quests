@@ -15,10 +15,33 @@ import org.springframework.data.jpa.domain.Specification
  */
 object SideQuestSpecifications {
 
+    private const val LIKE_ESCAPE = '\\'
+
     fun approved(): Specification<SideQuest> = hasStatus(SideQuestStatus.APPROVED)
 
     fun hasStatus(status: SideQuestStatus): Specification<SideQuest> =
         Specification { root, _, cb -> cb.equal(root.get<SideQuestStatus>("status"), status) }
+
+    /**
+     * What the search box on the home page sends. Matches the place, what is written about
+     * it, and where it is, so "fjord", "Iceland" and "Westfjords" all find something.
+     */
+    fun matchesText(text: String): Specification<SideQuest> =
+        Specification { root, _, cb ->
+            val pattern = "%${escapeForLike(text.trim().lowercase())}%"
+            val destination = root.get<Destination>("destination")
+
+            cb.or(
+                cb.like(cb.lower(root.get("name")), pattern, LIKE_ESCAPE),
+                cb.like(cb.lower(root.get("description")), pattern, LIKE_ESCAPE),
+                cb.like(cb.lower(destination.get("name")), pattern, LIKE_ESCAPE),
+                cb.like(cb.lower(destination.get<Country>("country").get("name")), pattern, LIKE_ESCAPE),
+            )
+        }
+
+    /** Otherwise a search for "100%" or "_" would match far more than the user meant. */
+    private fun escapeForLike(text: String): String =
+        text.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
 
     fun inCountry(countryId: Long): Specification<SideQuest> =
         Specification { root, _, cb ->

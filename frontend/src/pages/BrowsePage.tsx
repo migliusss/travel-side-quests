@@ -1,12 +1,32 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import type { FormEvent } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../api/client'
 import type { SideQuestFilter } from '../api/types'
 import SideQuestCard from '../components/SideQuestCard'
 
+/**
+ * The URL is the filter. That keeps the home page's search box and the category links
+ * working with nothing but a href, and makes any result list shareable.
+ */
 export default function BrowsePage() {
-  const [filter, setFilter] = useState<SideQuestFilter>({})
-  const [page, setPage] = useState(0)
+  const [params, setParams] = useSearchParams()
+
+  const filter: SideQuestFilter = {
+    q: params.get('q') ?? undefined,
+    countryId: numeric(params.get('countryId')),
+    destinationId: numeric(params.get('destinationId')),
+    categoryIds: params.getAll('categoryIds').map(Number).filter(Number.isFinite),
+    sourceTypeId: numeric(params.get('sourceTypeId')),
+  }
+
+  const page = numeric(params.get('page')) ?? 0
+
+  const [searchText, setSearchText] = useState(filter.q ?? '')
+
+  // The header search and the category links change the URL from outside this component.
+  useEffect(() => setSearchText(filter.q ?? ''), [filter.q])
 
   const countries = useQuery({ queryKey: ['countries'], queryFn: () => api.countries() })
   const categories = useQuery({ queryKey: ['categories'], queryFn: api.categories })
@@ -22,9 +42,23 @@ export default function BrowsePage() {
     queryFn: () => api.sideQuests(filter, page),
   })
 
-  function update(patch: Partial<SideQuestFilter>) {
-    setPage(0)
-    setFilter((current) => ({ ...current, ...patch }))
+  function update(patch: Partial<SideQuestFilter> & { page?: number }) {
+    const next = { ...filter, page: 0, ...patch }
+    const search = new URLSearchParams()
+
+    if (next.q) search.set('q', next.q)
+    if (next.countryId) search.set('countryId', String(next.countryId))
+    if (next.destinationId) search.set('destinationId', String(next.destinationId))
+    next.categoryIds?.forEach((id) => search.append('categoryIds', String(id)))
+    if (next.sourceTypeId) search.set('sourceTypeId', String(next.sourceTypeId))
+    if (next.page) search.set('page', String(next.page))
+
+    setParams(search)
+  }
+
+  function onSearch(event: FormEvent) {
+    event.preventDefault()
+    update({ q: searchText.trim() || undefined })
   }
 
   function toggleCategory(id: number) {
@@ -37,9 +71,9 @@ export default function BrowsePage() {
     })
   }
 
-  const hasFilter = Object.values(filter).some(
-    (value) => value !== undefined && (!Array.isArray(value) || value.length > 0),
-  )
+  const hasFilter =
+    Boolean(filter.q || filter.countryId || filter.destinationId || filter.sourceTypeId) ||
+    (filter.categoryIds?.length ?? 0) > 0
 
   return (
     <div className="grid gap-8 lg:grid-cols-[16rem_1fr]">
@@ -49,16 +83,26 @@ export default function BrowsePage() {
           {hasFilter && (
             <button
               type="button"
-              onClick={() => {
-                setFilter({})
-                setPage(0)
-              }}
+              onClick={() => setParams(new URLSearchParams())}
               className="text-xs font-semibold text-wine-600 hover:underline"
             >
               Clear
             </button>
           )}
         </div>
+
+        <form onSubmit={onSearch}>
+          <label className="label" htmlFor="search">
+            Search
+          </label>
+          <input
+            id="search"
+            className="field"
+            value={searchText}
+            onChange={(event) => setSearchText(event.target.value)}
+            placeholder="Fjords, a town, a country…"
+          />
+        </form>
 
         <div>
           <label className="label" htmlFor="country">
@@ -156,10 +200,12 @@ export default function BrowsePage() {
       </aside>
 
       <section>
-        <div className="mb-5 flex items-baseline justify-between">
-          <h1 className="font-display text-2xl font-bold">Side quests</h1>
+        <div className="mb-5 flex items-baseline justify-between gap-4">
+          <h1 className="font-display text-2xl font-bold">
+            {filter.q ? `“${filter.q}”` : 'Side quests'}
+          </h1>
           {quests.data && (
-            <p className="text-sm text-oxblood/50">
+            <p className="shrink-0 text-sm text-oxblood/50">
               {quests.data.totalElements} place{quests.data.totalElements === 1 ? '' : 's'}
             </p>
           )}
@@ -191,7 +237,7 @@ export default function BrowsePage() {
               type="button"
               className="btn-ghost"
               disabled={page === 0}
-              onClick={() => setPage((current) => current - 1)}
+              onClick={() => update({ page: page - 1 })}
             >
               Previous
             </button>
@@ -202,7 +248,7 @@ export default function BrowsePage() {
               type="button"
               className="btn-ghost"
               disabled={!quests.data.hasNext}
-              onClick={() => setPage((current) => current + 1)}
+              onClick={() => update({ page: page + 1 })}
             >
               Next
             </button>
@@ -211,4 +257,11 @@ export default function BrowsePage() {
       </section>
     </div>
   )
+}
+
+function numeric(value: string | null): number | undefined {
+  if (!value) return undefined
+
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : undefined
 }

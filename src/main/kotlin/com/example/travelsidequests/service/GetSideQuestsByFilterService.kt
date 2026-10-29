@@ -26,6 +26,9 @@ class GetSideQuestsByFilterService(
             listOfNotNull(
                 // Whatever else the caller asks for, only approved submissions are public.
                 SideQuestSpecifications.approved(),
+                filter.q
+                    ?.takeIf { it.isNotBlank() }
+                    ?.let { SideQuestSpecifications.matchesText(it) },
                 filter.countryId?.let { SideQuestSpecifications.inCountry(it) },
                 filter.destinationId?.let { SideQuestSpecifications.inDestination(it) },
                 filter.categoryIds
