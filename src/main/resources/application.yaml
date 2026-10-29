@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: travel-side-quests
+
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+  flyway:
+    enabled: true
+
+  data:
+    web:
+      pageable:
+        max-page-size: 100
+
+  jpa:
+    properties:
+      hibernate:
+        default_batch_fetch_size: 50
