@@ -1,24 +1,29 @@
 package com.example.travelsidequests
 
-import com.example.travelsidequests.service.FakeImageStorage
 import com.jayway.jsonpath.JsonPath
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
-import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.mock.web.MockMultipartFile
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user
 import org.springframework.test.web.servlet.MvcResult
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.awt.image.BufferedImage
+import java.io.ByteArrayOutputStream
+import javax.imageio.ImageIO
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class SideQuestSubmissionTest : AbstractIntegrationTest() {
 
     @Test
     fun `a submission is invisible until a moderator approves it`() {
-        val storageKey = (imageStorage as FakeImageStorage).storePending(ByteArray(8), "image/jpeg")
+        val storageKey = upload()
 
         val created = mockMvc.perform(
             post("/api/v1/side-quests")
@@ -33,20 +38,25 @@ class SideQuestSubmissionTest : AbstractIntegrationTest() {
         )
             .andExpect(status().isCreated)
             .andExpect(jsonPath("$.status").value("PENDING"))
-            .andExpect(jsonPath("$.images[0].imageUrl").value("/api/v1/images/$storageKey"))
             .andReturn()
 
         val questId = created.id()
+        val imageUrl = JsonPath.read<String>(created.response.contentAsString, "$.images[0].imageUrl")
 
-        assertFalse(publicQuestNames().contains("Dynjandi waterfall"), "pending quest leaked into the public list")
+        assertFalse(
+            publicQuestNames().contains("Dynjandi waterfall"),
+            "pending quest leaked into the public list"
+        )
 
         mockMvc.perform(get("/api/v1/side-quests/$questId"))
             .andExpect(status().isNotFound)
 
-        // The uploaded object is moved out of staging once something references it.
-        assertTrue((imageStorage as FakeImageStorage).promoted.contains(storageKey))
+        // The bytes survived the move out of the staging table.
+        mockMvc.perform(get(imageUrl))
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.IMAGE_PNG))
 
-        mockMvc.perform(post("/api/v1/admin/side-quests/$questId/approve").withAdmin())
+        mockMvc.perform(post("/api/v1/admin/side-quests/$questId/approve").asAdmin())
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.status").value("APPROVED"))
 
@@ -56,7 +66,6 @@ class SideQuestSubmissionTest : AbstractIntegrationTest() {
     }
 
     @Test
-    @WithMockUser(roles = ["ADMIN"])
     fun `a rejected submission records why and stays private`() {
         val questId = mockMvc.perform(
             post("/api/v1/side-quests")
@@ -69,6 +78,7 @@ class SideQuestSubmissionTest : AbstractIntegrationTest() {
 
         mockMvc.perform(
             post("/api/v1/admin/side-quests/$questId/reject")
+                .asAdmin()
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""{"reason": "Advertising"}""")
         )
@@ -95,8 +105,8 @@ class SideQuestSubmissionTest : AbstractIntegrationTest() {
 
     @Test
     fun `a blank name is rejected with the offending field named`() {
-        // Also the canary for the -Xannotation-default-target=param-property compiler flag:
-        // if the constraints ever stop being applied, this returns 201.
+        // Also the canary for the param-property annotation default: if the constraints
+        // ever stop landing on the field, Hibernate Validator sees nothing and this is 201.
         mockMvc.perform(
             post("/api/v1/side-quests")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -154,9 +164,33 @@ class SideQuestSubmissionTest : AbstractIntegrationTest() {
     }
 
     @Test
+    fun `a file that is not an image is rejected`() {
+        val notAnImage = MockMultipartFile(
+            "file", "payload.png", MediaType.IMAGE_PNG_VALUE, "<?php echo 1; ?>".toByteArray()
+        )
+
+        mockMvc.perform(multipart("/api/v1/images").file(notAnImage))
+            .andExpect(status().isBadRequest)
+    }
+
+    @Test
     fun `the admin queue requires authentication`() {
         mockMvc.perform(get("/api/v1/admin/side-quests"))
             .andExpect(status().isUnauthorized)
+    }
+
+    /** Uploads a real PNG and returns its key. */
+    private fun upload(): String {
+        val png = ByteArrayOutputStream()
+            .also { ImageIO.write(BufferedImage(40, 30, BufferedImage.TYPE_INT_RGB), "png", it) }
+            .toByteArray()
+
+        val file = MockMultipartFile("file", "photo.png", MediaType.IMAGE_PNG_VALUE, png)
+
+        return mockMvc.perform(multipart("/api/v1/images").file(file))
+            .andExpect(status().isCreated)
+            .andReturn()
+            .let { JsonPath.read(it.response.contentAsString, "$.storageKey") }
     }
 
     private fun submission(
@@ -197,10 +231,6 @@ class SideQuestSubmissionTest : AbstractIntegrationTest() {
 
     private fun MvcResult.id(): Long =
         JsonPath.read<Int>(response.contentAsString, "$.id").toLong()
-}
 
-private fun org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder.withAdmin() =
-    with(
-        org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
-            .user("admin").roles("ADMIN")
-    )
+    private fun MockHttpServletRequestBuilder.asAdmin() = with(user("admin").roles("ADMIN"))
+}

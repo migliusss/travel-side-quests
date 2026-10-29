@@ -13,13 +13,12 @@ class SideQuestImage(
     @JoinColumn(name = "side_quest_id", nullable = false)
     var sideQuest: SideQuest,
 
-    // Exactly one of imageUrl (external link) and storageKey (uploaded object) is set;
-    // the database enforces it with a check constraint.
+    /** Set for an external link. Uploaded images leave it null and carry bytes instead. */
     @Column(name = "image_url", columnDefinition = "text")
     var imageUrl: String? = null,
 
-    @Column(name = "storage_key", columnDefinition = "text")
-    var storageKey: String? = null,
+    @Column(name = "content_type", length = 100)
+    var contentType: String? = null,
 
     @Column(name = "alt_text", length = 300)
     var altText: String? = null,

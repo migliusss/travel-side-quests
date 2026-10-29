@@ -1,0 +1,70 @@
+@import 'tailwindcss';
+
+/*
+ * Palette from the Pantone board: Spinach Green, Placid Blue and the deep wine,
+ * with the oxblood and cream read off the photograph behind the swatches.
+ */
+@theme {
+  --color-spinach-50: #f5f7ea;
+  --color-spinach-100: #e8edcf;
+  --color-spinach-300: #c3cd8f;
+  --color-spinach-500: #a2ac64;
+  --color-spinach-600: #878f50;
+  --color-spinach-700: #676d3d;
+
+  --color-placid-50: #f1f6fb;
+  --color-placid-100: #dfeaf5;
+  --color-placid-300: #b5cde6;
+  --color-placid-500: #8cadd3;
+  --color-placid-600: #6a8fba;
+  --color-placid-700: #4f6e94;
+
+  --color-wine-50: #fbf3f4;
+  --color-wine-100: #f3e1e4;
+  --color-wine-300: #c98e9b;
+  --color-wine-500: #8f3a4b;
+  --color-wine-600: #6e2b3a;
+  --color-wine-700: #54202c;
+
+  --color-oxblood: #2e1419;
+  --color-cream: #f7f4ea;
+  --color-stone: #ddd7c8;
+
+  --font-display: 'Georgia', 'Iowan Old Style', serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-oxblood);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+  }
+}
+
+@layer components {
+  .field {
+    @apply w-full rounded-lg border border-stone bg-white px-3 py-2 text-sm
+           outline-none transition
+           focus:border-placid-500 focus:ring-2 focus:ring-placid-100;
+  }
+
+  .label {
+    @apply mb-1 block text-xs font-semibold tracking-wide text-oxblood/70 uppercase;
+  }
+
+  .btn-primary {
+    @apply rounded-lg bg-wine-600 px-4 py-2 text-sm font-semibold text-cream transition
+           hover:bg-wine-500 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-ghost {
+    @apply rounded-lg border border-stone px-4 py-2 text-sm font-semibold transition
+           hover:border-wine-300 hover:text-wine-600 disabled:opacity-50;
+  }
+}

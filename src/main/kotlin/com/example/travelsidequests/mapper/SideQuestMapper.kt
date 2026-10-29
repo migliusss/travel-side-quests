@@ -16,6 +16,7 @@ fun SideQuest.toResponse(): SideQuestResponse =
         longitude = longitude,
         websiteUrl = websiteUrl,
         status = status,
+        submittedBy = submittedBy,
         createdAt = createdAt,
         updatedAt = updatedAt,
         // A MutableSet has no stable iteration order, which would reshuffle the tags
@@ -34,9 +35,8 @@ fun SideQuest.toResponse(): SideQuestResponse =
         images = images.map { i ->
             ImageResponse(
                 id = requireNotNull(i.id),
-                // Uploaded images are served through the API so callers get a stable URL
-                // instead of a presigned one that expires.
-                imageUrl = i.imageUrl ?: "/api/v1/images/${requireNotNull(i.storageKey)}",
+                // Uploaded images are served by the API; external ones keep their own link.
+                imageUrl = i.imageUrl ?: "/api/v1/images/${requireNotNull(i.id)}",
                 altText = i.altText
             )
         }

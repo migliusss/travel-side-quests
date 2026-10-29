@@ -47,9 +47,3 @@ app:
   uploads:
     # Anyone can submit, so cap how often one address may upload.
     max-per-hour: ${UPLOAD_MAX_PER_HOUR:20}
-
-minio:
-  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
-  access-key: ${MINIO_ACCESS_KEY}
-  secret-key: ${MINIO_SECRET_KEY}
-  bucket: ${MINIO_BUCKET:side-quest-images}

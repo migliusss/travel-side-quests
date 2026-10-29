@@ -57,3 +57,7 @@ bin/
 .idea/dataSources/
 .idea/data_source_mapping.xml
 .idea/sqldialects.xml
+
+### Frontend ###
+frontend/node_modules/
+frontend/dist/

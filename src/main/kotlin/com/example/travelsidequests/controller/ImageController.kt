@@ -2,14 +2,10 @@ package com.example.travelsidequests.controller
 
 import com.example.travelsidequests.dto.ImageUploadResponse
 import com.example.travelsidequests.exceptionhandler.BadRequestException
-import com.example.travelsidequests.exceptionhandler.NotFoundException
-import com.example.travelsidequests.service.ImageProcessor
-import com.example.travelsidequests.service.ImageStorage
+import com.example.travelsidequests.service.ImageService
 import com.example.travelsidequests.service.UploadRateLimiter
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.servlet.http.HttpServletRequest
-import org.springframework.core.io.InputStreamResource
-import org.springframework.core.io.Resource
 import org.springframework.http.CacheControl
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -27,15 +23,14 @@ import java.util.concurrent.TimeUnit
 @RestController
 @RequestMapping("/api/v1/images")
 class ImageController(
-    private val imageStorage: ImageStorage,
-    private val imageProcessor: ImageProcessor,
+    private val imageService: ImageService,
     private val rateLimiter: UploadRateLimiter,
 ) {
 
     @Operation(
         summary = "Upload an image for a side quest submission.",
-        description = "Returns a storage key to reference from the create-side-quest request. " +
-            "Unreferenced uploads are discarded after a day."
+        description = "Returns a key to reference from the create-side-quest request. " +
+            "Uploads nothing references are discarded after a day."
     )
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
@@ -47,32 +42,20 @@ class ImageController(
 
         if (file.isEmpty) throw BadRequestException("No file was uploaded.")
 
-        val normalized = imageProcessor.normalize(file.bytes)
-
-        return ImageUploadResponse(
-            storageKey = imageStorage.storePending(normalized.bytes, normalized.contentType)
-        )
+        return ImageUploadResponse(storageKey = imageService.upload(file.bytes).toString())
     }
 
-    @Operation(summary = "Serve an uploaded image.")
-    @GetMapping("/{key}")
-    fun get(@PathVariable key: String): ResponseEntity<Resource> {
-        // The key goes straight into an object name, so nothing but a UUID may pass.
-        if (!KEY_PATTERN.matches(key)) throw NotFoundException("No image with key $key.")
-
-        val image = imageStorage.load(key) ?: throw NotFoundException("No image with key $key.")
+    @Operation(summary = "Serve a side quest image.")
+    @GetMapping("/{imageId}")
+    fun get(@PathVariable imageId: Long): ResponseEntity<ByteArray> {
+        val image = imageService.load(imageId)
 
         return ResponseEntity.ok()
-            // The key is a UUID, so the bytes behind it never change.
+            // An image row's bytes are never rewritten, so this is safe to keep forever.
             .cacheControl(CacheControl.maxAge(365, TimeUnit.DAYS).cachePublic().immutable())
-            .eTag(key)
+            .eTag(imageId.toString())
             .contentType(MediaType.parseMediaType(image.contentType))
-            .contentLength(image.size)
-            .body(InputStreamResource(image.stream))
-    }
-
-    companion object {
-        private val KEY_PATTERN =
-            Regex("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+            .contentLength(image.bytes.size.toLong())
+            .body(image.bytes)
     }
 }

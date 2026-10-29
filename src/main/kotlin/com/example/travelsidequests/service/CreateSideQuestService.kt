@@ -2,19 +2,25 @@ package com.example.travelsidequests.service
 
 import com.example.travelsidequests.data.Category
 import com.example.travelsidequests.data.Destination
+import com.example.travelsidequests.data.ImageUpload
 import com.example.travelsidequests.data.SideQuest
+import com.example.travelsidequests.data.SideQuestImageContent
 import com.example.travelsidequests.data.SideQuestStatus
 import com.example.travelsidequests.dto.CreateSideQuestRequest
+import com.example.travelsidequests.dto.ImageSubmission
 import com.example.travelsidequests.dto.SideQuestResponse
 import com.example.travelsidequests.exceptionhandler.BadRequestException
 import com.example.travelsidequests.mapper.toResponse
 import com.example.travelsidequests.repository.CategoryRepository
 import com.example.travelsidequests.repository.CountryRepository
 import com.example.travelsidequests.repository.DestinationRepository
+import com.example.travelsidequests.repository.ImageUploadRepository
+import com.example.travelsidequests.repository.SideQuestImageContentRepository
 import com.example.travelsidequests.repository.SideQuestRepository
 import com.example.travelsidequests.repository.SourceTypeRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 
 @Service
 class CreateSideQuestService(
@@ -23,21 +29,15 @@ class CreateSideQuestService(
     private val destinationRepository: DestinationRepository,
     private val categoryRepository: CategoryRepository,
     private val sourceTypeRepository: SourceTypeRepository,
-    private val imageStorage: ImageStorage,
+    private val imageUploadRepository: ImageUploadRepository,
+    private val imageContentRepository: SideQuestImageContentRepository,
 ) {
 
     @Transactional
     fun execute(request: CreateSideQuestRequest): SideQuestResponse {
         val destination = resolveDestination(request)
         val categories = resolveCategories(request.categoryIds)
-
-        request.images.forEach { image ->
-            if (!imageStorage.exists(image.storageKey)) {
-                throw BadRequestException(
-                    "Image ${image.storageKey} was not uploaded, or the upload expired."
-                )
-            }
-        }
+        val uploads = resolveUploads(request.images)
 
         val quest = SideQuest(
             destination = destination,
@@ -53,7 +53,9 @@ class CreateSideQuestService(
 
         quest.categories.addAll(categories)
 
-        request.images.forEach { quest.addUploadedImage(it.storageKey, it.altText?.trim()) }
+        uploads.forEach { (submission, upload) ->
+            quest.addUploadedImage(upload.contentType, submission.altText?.trim()?.ifBlank { null })
+        }
 
         request.sources.forEach { source ->
             val type = sourceTypeRepository.findById(source.sourceTypeId).orElseThrow {
@@ -69,13 +71,38 @@ class CreateSideQuestService(
             )
         }
 
-        // Flush so the cascaded images and sources have ids before they are mapped.
+        // Flush so the cascaded images and sources have ids before anything references them.
         val saved = sideQuestRepository.saveAndFlush(quest)
 
-        request.images.forEach { imageStorage.promote(it.storageKey) }
+        // The image rows were added in upload order, so they line up.
+        saved.images.zip(uploads).forEach { (image, pair) ->
+            imageContentRepository.save(
+                SideQuestImageContent(
+                    imageId = requireNotNull(image.id),
+                    content = pair.second.content,
+                )
+            )
+        }
+
+        imageUploadRepository.deleteAll(uploads.map { it.second })
 
         return saved.toResponse()
     }
+
+    private fun resolveUploads(
+        submissions: List<ImageSubmission>
+    ): List<Pair<ImageSubmission, ImageUpload>> =
+        submissions.map { submission ->
+            val key = runCatching { UUID.fromString(submission.storageKey) }.getOrNull()
+                ?: throw BadRequestException("${submission.storageKey} is not an upload key.")
+
+            val upload = imageUploadRepository.findByStorageKey(key)
+                ?: throw BadRequestException(
+                    "Image ${submission.storageKey} was not uploaded, or the upload expired."
+                )
+
+            submission to upload
+        }
 
     private fun resolveDestination(request: CreateSideQuestRequest): Destination {
         val country = countryRepository.findByCountryCodeIgnoreCase(request.countryCode)

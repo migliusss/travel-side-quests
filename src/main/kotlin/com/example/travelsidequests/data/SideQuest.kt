@@ -88,11 +88,11 @@ class SideQuest(
         )
     }
 
-    fun addUploadedImage(storageKey: String, altText: String? = null) {
+    fun addUploadedImage(contentType: String, altText: String? = null) {
         images.add(
             SideQuestImage(
                 sideQuest = this,
-                storageKey = storageKey,
+                contentType = contentType,
                 altText = altText
             )
         )

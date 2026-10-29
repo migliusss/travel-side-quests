@@ -14,6 +14,8 @@ data class SideQuestResponse(
     val longitude: BigDecimal,
     val websiteUrl: String?,
     val status: SideQuestStatus,
+    /** Optional, unverified credit the submitter typed in. */
+    val submittedBy: String?,
     val createdAt: Instant,
     val updatedAt: Instant,
     val categories: List<CategoryResponse>,
