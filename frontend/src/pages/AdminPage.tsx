@@ -60,10 +60,10 @@ function SignIn({
   return (
     <form
       onSubmit={handle}
-      className="mx-auto max-w-sm space-y-4 rounded-2xl border border-stone/70 bg-white p-6"
+      className="mx-auto max-w-sm space-y-4 rounded-2xl border border-sage-200 bg-white p-6"
     >
       <h1 className="font-display text-xl font-bold">Review queue</h1>
-      <p className="text-sm text-oxblood/60">The moderation account set in the backend.</p>
+      <p className="text-sm text-forest-600">The moderation account set in the backend.</p>
 
       <div>
         <label className="label" htmlFor="user">
@@ -132,8 +132,8 @@ function Queue({
 
   if (queue.isError && (queue.error as ApiError).status === 401) {
     return (
-      <div className="mx-auto max-w-sm space-y-4 rounded-2xl bg-wine-50 p-6 text-center">
-        <p className="text-sm text-wine-700">Those credentials were not accepted.</p>
+      <div className="mx-auto max-w-sm space-y-4 rounded-2xl bg-danger-50 p-6 text-center">
+        <p className="text-sm text-forest-900">Those credentials were not accepted.</p>
         <button type="button" className="btn-ghost" onClick={onSignOut}>
           Try again
         </button>
@@ -157,8 +157,8 @@ function Queue({
               }}
               className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
                 status === entry
-                  ? 'bg-wine-600 text-cream'
-                  : 'bg-white text-oxblood/60 hover:text-wine-600'
+                  ? 'bg-forest-800 text-paper'
+                  : 'bg-white text-forest-600 hover:text-forest-900'
               }`}
             >
               {entry.toLowerCase()}
@@ -171,10 +171,10 @@ function Queue({
         </button>
       </div>
 
-      {queue.isPending && <p className="text-oxblood/60">Loading…</p>}
+      {queue.isPending && <p className="text-forest-600">Loading…</p>}
 
       {queue.data?.content.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-stone p-10 text-center text-oxblood/60">
+        <div className="rounded-2xl border border-dashed border-sage-200 p-10 text-center text-forest-600">
           Nothing {status.toLowerCase()}.
         </div>
       )}
@@ -183,7 +183,7 @@ function Queue({
         {queue.data?.content.map((quest) => (
           <li
             key={quest.id}
-            className="flex flex-col gap-4 rounded-2xl border border-stone/70 bg-white p-4 sm:flex-row"
+            className="flex flex-col gap-4 rounded-2xl border border-sage-200 bg-white p-4 sm:flex-row"
           >
             {quest.images[0] && (
               <img
@@ -194,19 +194,19 @@ function Queue({
             )}
 
             <div className="flex-1 space-y-1">
-              <p className="text-xs font-semibold tracking-wide text-placid-700 uppercase">
+              <p className="text-xs font-semibold tracking-wide text-forest-700 uppercase">
                 {quest.destination.name}, {quest.destination.country.name}
               </p>
               <h2 className="font-display text-lg font-semibold">{quest.name}</h2>
-              <p className="text-sm text-oxblood/70">{quest.description}</p>
-              <p className="text-xs text-oxblood/40">
+              <p className="text-sm text-forest-700">{quest.description}</p>
+              <p className="text-xs text-forest-500">
                 {quest.categories.map((c) => c.name.toLowerCase()).join(' · ')}
                 {quest.submittedBy ? ` — credited to ${quest.submittedBy}` : ''}
               </p>
               {quest.status === 'APPROVED' && (
                 <Link
                   to={`/side-quests/${quest.id}`}
-                  className="inline-block text-xs font-semibold text-wine-600 hover:underline"
+                  className="inline-block text-xs font-semibold text-forest-900 hover:underline"
                 >
                   View it live
                 </Link>
@@ -248,7 +248,7 @@ function Queue({
           >
             Previous
           </button>
-          <span className="text-sm text-oxblood/60">
+          <span className="text-sm text-forest-600">
             {queue.data.page + 1} of {queue.data.totalPages}
           </span>
           <button

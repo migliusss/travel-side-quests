@@ -31,11 +31,11 @@ export default function HomePage() {
         <HeroBackdrop />
 
         <div className="relative mx-auto max-w-3xl px-5 py-24 text-center sm:py-32">
-          <h1 className="font-display text-4xl leading-tight font-bold text-cream sm:text-5xl">
+          <h1 className="font-display text-4xl leading-tight font-bold text-paper sm:text-5xl">
             The places that never make the top ten
           </h1>
 
-          <p className="mx-auto mt-4 max-w-xl text-cream/75">
+          <p className="mx-auto mt-4 max-w-xl text-lime-100">
             Detours worth taking, each one recommended by someone who went.
           </p>
 
@@ -46,7 +46,7 @@ export default function HomePage() {
 
             <div
               className="flex items-center gap-2 rounded-full bg-white p-2 pl-5 shadow-xl
-                         ring-1 ring-black/5 focus-within:ring-2 focus-within:ring-spinach-500"
+                         ring-1 ring-black/5 focus-within:ring-2 focus-within:ring-pink-200"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -55,7 +55,7 @@ export default function HomePage() {
                 strokeWidth={2}
                 strokeLinecap="round"
                 aria-hidden="true"
-                className="h-5 w-5 shrink-0 text-wine-600"
+                className="h-5 w-5 shrink-0 text-forest-900"
               >
                 <circle cx="11" cy="11" r="7" />
                 <path d="M20 20l-3.5-3.5" />
@@ -67,18 +67,18 @@ export default function HomePage() {
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Where do you want to go?"
                 className="min-w-0 flex-1 bg-transparent py-2 text-[15px] outline-none
-                           placeholder:text-oxblood/40"
+                           placeholder:text-forest-500"
               />
 
-              <button type="submit" className="btn-primary shrink-0 rounded-full px-5">
+              <button type="submit" className="btn-signature shrink-0 rounded-full px-5">
                 Search
               </button>
             </div>
           </form>
 
-          <p className="mt-4 text-sm text-cream/60">
+          <p className="mt-4 text-sm text-lime-200">
             Know somewhere?{' '}
-            <Link to="/submit" className="font-semibold text-cream underline underline-offset-4">
+            <Link to="/submit" className="font-semibold text-paper underline underline-offset-4">
               Add it
             </Link>
           </p>
@@ -97,12 +97,12 @@ export default function HomePage() {
               >
                 <span
                   className="flex h-16 w-16 items-center justify-center rounded-full
-                             bg-spinach-100 text-spinach-700 transition
-                             group-hover:bg-spinach-500 group-hover:text-cream"
+                             bg-lime-100 text-forest-900 transition
+                             group-hover:bg-pink-200 group-hover:text-forest-900"
                 >
                   <CategoryIcon name={category.name} className="h-7 w-7" />
                 </span>
-                <span className="text-xs font-semibold tracking-wide text-spinach-700 uppercase">
+                <span className="text-xs font-semibold tracking-wide text-forest-700 uppercase">
                   {category.name.toLowerCase()}
                 </span>
               </Link>
@@ -115,7 +115,7 @@ export default function HomePage() {
         <section className="mx-auto max-w-6xl px-5 pb-20">
           <div className="mb-5 flex items-baseline justify-between">
             <h2 className="font-display text-2xl font-bold">Recently added</h2>
-            <Link to="/browse" className="text-sm font-semibold text-wine-600 hover:underline">
+            <Link to="/browse" className="text-sm font-semibold text-forest-900 hover:underline">
               See all {latest.data.totalElements}
             </Link>
           </div>

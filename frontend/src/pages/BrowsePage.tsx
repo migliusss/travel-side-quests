@@ -84,7 +84,7 @@ export default function BrowsePage() {
             <button
               type="button"
               onClick={() => setParams(new URLSearchParams())}
-              className="text-xs font-semibold text-wine-600 hover:underline"
+              className="text-xs font-semibold text-forest-900 hover:underline"
             >
               Clear
             </button>
@@ -164,8 +164,8 @@ export default function BrowsePage() {
                   onClick={() => toggleCategory(category.id)}
                   className={`rounded-full px-2.5 py-1 text-xs font-medium transition ${
                     active
-                      ? 'bg-spinach-600 text-cream'
-                      : 'bg-spinach-50 text-spinach-700 hover:bg-spinach-100'
+                      ? 'bg-lime-300 text-forest-900'
+                      : 'bg-lime-50 text-forest-700 hover:bg-lime-100'
                   }`}
                 >
                   {category.name.toLowerCase()}
@@ -205,23 +205,23 @@ export default function BrowsePage() {
             {filter.q ? `“${filter.q}”` : 'Side quests'}
           </h1>
           {quests.data && (
-            <p className="shrink-0 text-sm text-oxblood/50">
+            <p className="shrink-0 text-sm text-forest-600">
               {quests.data.totalElements} place{quests.data.totalElements === 1 ? '' : 's'}
             </p>
           )}
         </div>
 
-        {quests.isPending && <p className="text-oxblood/60">Loading…</p>}
+        {quests.isPending && <p className="text-forest-600">Loading…</p>}
 
         {quests.isError && (
-          <p className="rounded-lg bg-wine-50 p-4 text-sm text-wine-700">
+          <p className="rounded-lg bg-danger-50 p-4 text-sm text-forest-900">
             Could not load places. Is the backend running?
           </p>
         )}
 
         {quests.data?.content.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-stone p-10 text-center">
-            <p className="text-oxblood/60">Nothing matches that yet.</p>
+          <div className="rounded-2xl border border-dashed border-sage-200 p-10 text-center">
+            <p className="text-forest-600">Nothing matches that yet.</p>
           </div>
         )}
 
@@ -241,7 +241,7 @@ export default function BrowsePage() {
             >
               Previous
             </button>
-            <span className="text-sm text-oxblood/60">
+            <span className="text-sm text-forest-600">
               {quests.data.page + 1} of {quests.data.totalPages}
             </span>
             <button

@@ -12,7 +12,7 @@ function NavItem({ to, children }: { to: string; children: React.ReactNode }) {
       end={to === '/'}
       className={({ isActive }) =>
         `rounded-full px-3 py-1.5 text-sm font-semibold transition ${
-          isActive ? 'bg-wine-600 text-cream' : 'text-oxblood/70 hover:text-wine-600'
+          isActive ? 'bg-forest-800 text-paper' : 'text-forest-700 hover:text-forest-900'
         }`
       }
     >
@@ -29,11 +29,11 @@ function Contained({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-20 border-b border-stone/70 bg-cream/90 backdrop-blur">
+      <header className="sticky top-0 z-20 border-b border-sage-200 bg-paper/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center gap-6 px-5 py-4">
           <NavLink to="/" className="flex items-baseline gap-2">
-            <span className="font-display text-xl font-bold text-wine-600">Side Quests</span>
-            <span className="hidden text-xs text-oxblood/50 sm:inline">
+            <span className="font-display text-xl font-bold text-forest-900">Travel Side Quests</span>
+            <span className="hidden text-xs text-forest-600 sm:inline">
               places that never make the top ten
             </span>
           </NavLink>
@@ -85,14 +85,14 @@ export default function App() {
             path="*"
             element={
               <Contained>
-                <p className="text-oxblood/60">Nothing here.</p>
+                <p className="text-forest-600">Nothing here.</p>
               </Contained>
             }
           />
         </Routes>
       </main>
 
-      <footer className="border-t border-stone/70 py-8 text-center text-xs text-oxblood/50">
+      <footer className="border-t border-sage-200 py-8 text-center text-xs text-forest-600">
         Every place here was recommended by someone, and says by whom.
       </footer>
     </div>

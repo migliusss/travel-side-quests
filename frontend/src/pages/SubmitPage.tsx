@@ -101,9 +101,9 @@ export default function SubmitPage() {
 
   if (submit.isSuccess) {
     return (
-      <div className="mx-auto max-w-xl rounded-2xl border border-spinach-300 bg-spinach-50 p-10 text-center">
-        <h1 className="font-display text-2xl font-bold text-spinach-700">Thank you</h1>
-        <p className="mt-3 text-oxblood/70">
+      <div className="mx-auto max-w-xl rounded-2xl border border-pink-300 bg-pink-50 p-10 text-center">
+        <h1 className="font-display text-2xl font-bold text-forest-900">Thank you</h1>
+        <p className="mt-3 text-forest-700">
           <strong>{submit.data.name}</strong> is in the queue. Someone will read it before it
           goes live, so it will not show up on the site just yet.
         </p>
@@ -123,7 +123,7 @@ export default function SubmitPage() {
     <form onSubmit={onSubmit} className="mx-auto max-w-2xl space-y-8">
       <header>
         <h1 className="font-display text-2xl font-bold">Add a place</h1>
-        <p className="mt-1 text-sm text-oxblood/60">
+        <p className="mt-1 text-sm text-forest-600">
           Somewhere worth the detour that no list sends people to. Every submission is read
           before it appears.
         </p>
@@ -281,8 +281,8 @@ export default function SubmitPage() {
                   }
                   className={`rounded-full px-2.5 py-1 text-xs font-medium transition ${
                     active
-                      ? 'bg-spinach-600 text-cream'
-                      : 'bg-spinach-50 text-spinach-700 hover:bg-spinach-100'
+                      ? 'bg-lime-300 text-forest-900'
+                      : 'bg-lime-50 text-forest-700 hover:bg-lime-100'
                   }`}
                 >
                   {category.name.toLowerCase()}
@@ -304,18 +304,18 @@ export default function SubmitPage() {
             event.target.value = ''
           }}
         />
-        <p className="text-xs text-oxblood/50">
+        <p className="text-xs text-forest-600">
           JPEG or PNG, up to 5&nbsp;MB. Photos are re-encoded on upload, which removes the
           location data cameras embed in them.
         </p>
 
-        {upload.isPending && <p className="text-sm text-oxblood/60">Uploading…</p>}
-        {uploadError && <p className="text-sm text-wine-600">{uploadError}</p>}
+        {upload.isPending && <p className="text-sm text-forest-600">Uploading…</p>}
+        {uploadError && <p className="text-sm text-forest-900">{uploadError}</p>}
 
         {images.length > 0 && (
           <ul className="grid gap-3 sm:grid-cols-2">
             {images.map((image, index) => (
-              <li key={image.storageKey} className="space-y-2 rounded-xl border border-stone/70 p-2">
+              <li key={image.storageKey} className="space-y-2 rounded-xl border border-sage-200 p-2">
                 <img
                   src={image.previewUrl}
                   alt=""
@@ -335,7 +335,7 @@ export default function SubmitPage() {
                 />
                 <button
                   type="button"
-                  className="text-xs font-semibold text-wine-600 hover:underline"
+                  className="text-xs font-semibold text-forest-900 hover:underline"
                   onClick={() =>
                     setImages((current) => current.filter((_, position) => position !== index))
                   }
@@ -349,13 +349,13 @@ export default function SubmitPage() {
       </Section>
 
       <Section title="Where you heard about it">
-        <p className="-mt-2 text-xs text-oxblood/50">
+        <p className="-mt-2 text-xs text-forest-600">
           The part that makes this site useful. A book, a video, a friend — whatever sent you
           there.
         </p>
 
         {sources.map((source, index) => (
-          <div key={index} className="grid gap-3 rounded-xl border border-stone/70 p-3 sm:grid-cols-2">
+          <div key={index} className="grid gap-3 rounded-xl border border-sage-200 p-3 sm:grid-cols-2">
             <Field label="What it was">
               <input
                 className="field"
@@ -425,7 +425,7 @@ export default function SubmitPage() {
 
             <button
               type="button"
-              className="justify-self-start text-xs font-semibold text-wine-600 hover:underline"
+              className="justify-self-start text-xs font-semibold text-forest-900 hover:underline"
               onClick={() =>
                 setSources((current) => current.filter((_, position) => position !== index))
               }
@@ -456,7 +456,7 @@ export default function SubmitPage() {
       </Section>
 
       {submit.isError && (
-        <div className="rounded-xl bg-wine-50 p-4 text-sm text-wine-700">
+        <div className="rounded-xl bg-danger-50 p-4 text-sm text-forest-900">
           {(submit.error as ApiError).message}
         </div>
       )}
@@ -470,7 +470,7 @@ export default function SubmitPage() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="space-y-4 rounded-2xl border border-stone/70 bg-white p-5">
+    <section className="space-y-4 rounded-2xl border border-sage-200 bg-white p-5">
       <h2 className="font-display text-lg font-semibold">{title}</h2>
       {children}
     </section>
@@ -490,7 +490,7 @@ function Field({
     <div>
       <span className="label">{label}</span>
       {children}
-      {error && <p className="mt-1 text-xs text-wine-600">{error}</p>}
+      {error && <p className="mt-1 text-xs text-forest-900">{error}</p>}
     </div>
   )
 }
@@ -512,7 +512,7 @@ function ModeButton({
       onClick={onClick}
       disabled={disabled}
       className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition disabled:opacity-40 ${
-        active ? 'bg-placid-600 text-white' : 'bg-placid-50 text-placid-700 hover:bg-placid-100'
+        active ? 'bg-forest-700 text-white' : 'bg-lime-50 text-forest-700 hover:bg-lime-100'
       }`}
     >
       {children}
