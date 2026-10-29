@@ -2,7 +2,7 @@ package com.example.travelsidequests.data
 
 import jakarta.persistence.*
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import java.time.Instant
 
 @Entity
 @Table(name = "side_quest")
@@ -28,18 +28,32 @@ class SideQuest(
     @Column(nullable = false, precision = 9, scale = 7)
     var latitude: BigDecimal,
 
-    @Column(nullable = false, precision = 9, scale = 7)
+    @Column(nullable = false, precision = 10, scale = 7)
     var longitude: BigDecimal,
 
     @Column(name = "website_url", columnDefinition = "text")
     var websiteUrl: String? = null,
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    var status: SideQuestStatus = SideQuestStatus.PENDING,
+
+    // Optional credit the submitter types in. Nobody signs in, so this is unverified.
+    @Column(name = "submitted_by", length = 200)
+    var submittedBy: String? = null,
+
+    @Column(name = "rejection_reason", columnDefinition = "text")
+    var rejectionReason: String? = null,
+
+    @Column(name = "moderated_at")
+    var moderatedAt: Instant? = null,
 ) {
     @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now()
+    var createdAt: Instant = Instant.now()
         protected set
 
     @Column(name = "updated_at", nullable = false)
-    var updatedAt: LocalDateTime = LocalDateTime.now()
+    var updatedAt: Instant = Instant.now()
         protected set
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -74,6 +88,16 @@ class SideQuest(
         )
     }
 
+    fun addUploadedImage(storageKey: String, altText: String? = null) {
+        images.add(
+            SideQuestImage(
+                sideQuest = this,
+                storageKey = storageKey,
+                altText = altText
+            )
+        )
+    }
+
     fun addSource(name: String, type: SourceType, author: String? = null, url: String? = null, pageNumber: String? = null) {
         sources.add(
             SideQuestSource(
@@ -89,13 +113,13 @@ class SideQuest(
 
     @PrePersist
     fun onCreate() {
-        val now = LocalDateTime.now()
+        val now = Instant.now()
         createdAt = now
         updatedAt = now
     }
 
     @PreUpdate
     fun onUpdate() {
-        updatedAt = LocalDateTime.now()
+        updatedAt = Instant.now()
     }
 }

@@ -17,8 +17,7 @@ class Country(
         name = "country_code",
         nullable = false,
         unique = true,
-        length = 2,
-        columnDefinition = "char(2)"
+        length = 2
     )
     var countryCode: String,
 )

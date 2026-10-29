@@ -1,7 +1,8 @@
 package com.example.travelsidequests.dto
 
+import com.example.travelsidequests.data.SideQuestStatus
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import java.time.Instant
 
 data class SideQuestResponse(
     val id: Long,
@@ -12,8 +13,9 @@ data class SideQuestResponse(
     val latitude: BigDecimal,
     val longitude: BigDecimal,
     val websiteUrl: String?,
-    val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime,
+    val status: SideQuestStatus,
+    val createdAt: Instant,
+    val updatedAt: Instant,
     val categories: List<CategoryResponse>,
     val sources: List<SourceResponse>,
     val images: List<ImageResponse>

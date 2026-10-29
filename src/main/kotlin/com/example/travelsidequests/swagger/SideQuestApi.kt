@@ -1,12 +1,12 @@
 package com.example.travelsidequests.swagger
 
+import com.example.travelsidequests.dto.CreateSideQuestRequest
 import com.example.travelsidequests.dto.PageResponse
 import com.example.travelsidequests.dto.SideQuestFilterRequest
 import com.example.travelsidequests.dto.SideQuestResponse
 import io.swagger.v3.oas.annotations.Operation
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
-import org.springframework.http.ResponseEntity
 
 interface SideQuestApi {
 
@@ -19,9 +19,13 @@ interface SideQuestApi {
         @ParameterObject pageable: Pageable
     ): PageResponse<SideQuestResponse>
 
-    @Operation(summary = "Create and save a new side quest.")
-    fun create() : ResponseEntity<SideQuestResponse>
+    @Operation(summary = "Get a single side quest.")
+    fun getById(questId: Long): SideQuestResponse
 
-    @Operation(summary = "Update an existing side quest.")
-    fun update() : ResponseEntity<SideQuestResponse>
+    @Operation(
+        summary = "Submit a new side quest.",
+        description = "Anyone may submit. The submission is held for review and is not " +
+            "returned by the public endpoints until a moderator approves it."
+    )
+    fun create(request: CreateSideQuestRequest): SideQuestResponse
 }
