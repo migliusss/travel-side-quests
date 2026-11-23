@@ -10,7 +10,7 @@ export default function SideQuestCard({ quest }: { quest: SideQuest }) {
       className="group flex flex-col overflow-hidden rounded-2xl border border-sage-200 bg-white
                  transition hover:-translate-y-0.5 hover:border-pink-300 hover:shadow-lg"
     >
-      <div className="aspect-[4/3] overflow-hidden bg-lime-100">
+      <div className="aspect-4/3 overflow-hidden bg-lime-100">
         {cover ? (
           <img
             src={cover.imageUrl}

@@ -3,12 +3,11 @@ package com.example.travelsidequests.data
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "category")
+@Table(name = "category_type")
 class Category(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    var categoryId: Long? = null,
+    var id: Long? = null,
 
     @Column(nullable = false, unique = true, length = 100)
     var name: String,

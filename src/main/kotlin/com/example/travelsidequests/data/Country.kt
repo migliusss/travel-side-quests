@@ -8,7 +8,7 @@ class Country(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    var countryId: Long? = null,
+    var id: Long? = null,
 
     @Column(nullable = false, length = 100)
     var name: String,

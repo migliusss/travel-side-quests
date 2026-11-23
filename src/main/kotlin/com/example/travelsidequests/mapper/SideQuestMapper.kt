@@ -1,43 +1,20 @@
 package com.example.travelsidequests.mapper
 
 import com.example.travelsidequests.data.SideQuest
-import com.example.travelsidequests.dto.ImageResponse
 import com.example.travelsidequests.dto.SideQuestResponse
-import com.example.travelsidequests.dto.SourceResponse
 
 fun SideQuest.toResponse(): SideQuestResponse =
     SideQuestResponse(
-        id = requireNotNull(questId),
-        destination = destination.toResponse(),
+        id = requireNotNull(id),
         name = name,
-        description = description,
         address = address,
+        description = description,
         latitude = latitude,
         longitude = longitude,
-        websiteUrl = websiteUrl,
-        status = status,
-        submittedBy = submittedBy,
         createdAt = createdAt,
         updatedAt = updatedAt,
-        // A MutableSet has no stable iteration order, which would reshuffle the tags
-        // in the UI between identical requests.
-        categories = categories.sortedBy { it.name }.map { it.toResponse() },
-        sources = sources.map { s ->
-            SourceResponse(
-                id = requireNotNull(s.id),
-                name = s.name,
-                type = s.type.toResponse(),
-                author = s.author,
-                url = s.url,
-                pageNumber = s.pageNumber
-            )
-        },
-        images = images.map { i ->
-            ImageResponse(
-                id = requireNotNull(i.id),
-                // Uploaded images are served by the API; external ones keep their own link.
-                imageUrl = i.imageUrl ?: "/api/v1/images/${requireNotNull(i.id)}",
-                altText = i.altText
-            )
-        }
+        destination = destination.toResponse(),
+        categories = categories.map { c -> c.toResponse() },
+        sources = sources.map { s -> s.toResponse() },
+        images = images.map { i -> i.toResponse() },
     )

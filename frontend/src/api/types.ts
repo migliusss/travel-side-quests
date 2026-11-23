@@ -1,7 +1,4 @@
-// Mirrors the DTOs in com.example.travelsidequests.dto.
-//
-// Hand-written. Generating them from /v3/api-docs with openapi-typescript would be better,
-// but that package still pins TypeScript 5.x and this project is on 7.
+// Hand-written. Generating them from /v3/api-docs with openapi-typescript would be better.
 
 export type SideQuestStatus = 'PENDING' | 'APPROVED' | 'REJECTED'
 
@@ -70,20 +67,6 @@ export interface Page<T> {
   hasNext: boolean
 }
 
-export interface SideQuestFilter {
-  /** Free text, matched against the name, description, destination and country. */
-  q?: string
-  countryId?: number
-  destinationId?: number
-  categoryIds?: number[]
-  sourceTypeId?: number
-}
-
-export interface ImageSubmission {
-  storageKey: string
-  altText?: string | null
-}
-
 export interface SourceSubmission {
   name: string
   sourceTypeId: number
@@ -104,7 +87,6 @@ export interface CreateSideQuest {
   destinationName?: string | null
   destinationType?: string | null
   categoryIds: number[]
-  images: ImageSubmission[]
   sources: SourceSubmission[]
   submittedBy?: string | null
 }

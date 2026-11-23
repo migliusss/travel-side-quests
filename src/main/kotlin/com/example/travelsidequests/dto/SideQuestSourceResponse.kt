@@ -1,6 +1,6 @@
 package com.example.travelsidequests.dto
 
-data class SourceResponse(
+data class SideQuestSourceResponse(
     val id: Long,
     val name: String,
     val type: SourceTypeResponse,

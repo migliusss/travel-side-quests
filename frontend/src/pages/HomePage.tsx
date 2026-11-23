@@ -1,10 +1,8 @@
-import { useState } from 'react'
-import type { FormEvent } from 'react'
+import {type ChangeEvent, useState} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../api/client'
 import CategoryIcon from '../components/CategoryIcon'
-import HeroBackdrop from '../components/HeroBackdrop'
 import SideQuestCard from '../components/SideQuestCard'
 
 export default function HomePage() {
@@ -18,7 +16,7 @@ export default function HomePage() {
     queryFn: () => api.sideQuests({}, 0, 3),
   })
 
-  function onSearch(event: FormEvent) {
+  function onSearch(event: ChangeEvent) {
     event.preventDefault()
 
     const query = search.trim()
@@ -28,7 +26,6 @@ export default function HomePage() {
   return (
     <>
       <section className="relative isolate overflow-hidden">
-        <HeroBackdrop />
 
         <div className="relative mx-auto max-w-3xl px-5 py-24 text-center sm:py-32">
           <h1 className="font-display text-4xl leading-tight font-bold text-paper sm:text-5xl">
@@ -45,8 +42,7 @@ export default function HomePage() {
             </label>
 
             <div
-              className="flex items-center gap-2 rounded-full bg-white p-2 pl-5 shadow-xl
-                         ring-1 ring-black/5 focus-within:ring-2 focus-within:ring-pink-200"
+              className="flex items-center gap-2 rounded-full bg-white p-2 pl-5 shadow-xl ring-black/5 focus-within:ring-2"
             >
               <svg
                 viewBox="0 0 24 24"

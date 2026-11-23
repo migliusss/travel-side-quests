@@ -2,8 +2,6 @@ import { NavLink, Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import BrowsePage from './pages/BrowsePage'
 import SideQuestPage from './pages/SideQuestPage'
-import SubmitPage from './pages/SubmitPage'
-import AdminPage from './pages/AdminPage'
 
 function NavItem({ to, children }: { to: string; children: React.ReactNode }) {
   return (
@@ -62,22 +60,6 @@ export default function App() {
             element={
               <Contained>
                 <SideQuestPage />
-              </Contained>
-            }
-          />
-          <Route
-            path="/submit"
-            element={
-              <Contained>
-                <SubmitPage />
-              </Contained>
-            }
-          />
-          <Route
-            path="/admin"
-            element={
-              <Contained>
-                <AdminPage />
               </Contained>
             }
           />

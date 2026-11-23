@@ -10,7 +10,7 @@ class SideQuest(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    var questId: Long? = null,
+    var id: Long? = null,
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "destination_id", nullable = false)
@@ -30,23 +30,6 @@ class SideQuest(
 
     @Column(nullable = false, precision = 10, scale = 7)
     var longitude: BigDecimal,
-
-    @Column(name = "website_url", columnDefinition = "text")
-    var websiteUrl: String? = null,
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    var status: SideQuestStatus = SideQuestStatus.PENDING,
-
-    // Optional credit the submitter types in. Nobody signs in, so this is unverified.
-    @Column(name = "submitted_by", length = 200)
-    var submittedBy: String? = null,
-
-    @Column(name = "rejection_reason", columnDefinition = "text")
-    var rejectionReason: String? = null,
-
-    @Column(name = "moderated_at")
-    var moderatedAt: Instant? = null,
 ) {
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: Instant = Instant.now()
@@ -88,17 +71,13 @@ class SideQuest(
         )
     }
 
-    fun addUploadedImage(contentType: String, altText: String? = null) {
-        images.add(
-            SideQuestImage(
-                sideQuest = this,
-                contentType = contentType,
-                altText = altText
-            )
-        )
-    }
-
-    fun addSource(name: String, type: SourceType, author: String? = null, url: String? = null, pageNumber: String? = null) {
+    fun addSource(
+        name: String,
+        type: SourceType,
+        author: String? = null,
+        url: String? = null,
+        pageNumber: String? = null
+    ) {
         sources.add(
             SideQuestSource(
                 sideQuest = this,

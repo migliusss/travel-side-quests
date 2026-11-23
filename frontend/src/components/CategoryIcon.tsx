@@ -1,7 +1,3 @@
-/**
- * One pictogram per seeded category. Unknown names fall back to a pin, so adding a
- * category to the database never breaks the home page.
- */
 const PATHS: Record<string, string> = {
   HIKING: 'M4 20l5-9 3 4 2-3 6 8M9 11V5m0 0l3 2-3 2',
   NATURE: 'M12 3l5 8h-3l4 6H6l4-6H7l5-8zM12 17v4',

@@ -5,27 +5,13 @@ import com.example.travelsidequests.data.Country
 import com.example.travelsidequests.data.Destination
 import com.example.travelsidequests.data.SideQuest
 import com.example.travelsidequests.data.SideQuestSource
-import com.example.travelsidequests.data.SideQuestStatus
 import com.example.travelsidequests.data.SourceType
 import org.springframework.data.jpa.domain.Specification
 
-/**
- * Every public read composes [approved]. Keeping it in one place is convenience;
- * the safeguard is the integration test asserting a pending quest is invisible.
- */
 object SideQuestSpecifications {
 
     private const val LIKE_ESCAPE = '\\'
 
-    fun approved(): Specification<SideQuest> = hasStatus(SideQuestStatus.APPROVED)
-
-    fun hasStatus(status: SideQuestStatus): Specification<SideQuest> =
-        Specification { root, _, cb -> cb.equal(root.get<SideQuestStatus>("status"), status) }
-
-    /**
-     * What the search box on the home page sends. Matches the place, what is written about
-     * it, and where it is, so "fjord", "Iceland" and "Westfjords" all find something.
-     */
     fun matchesText(text: String): Specification<SideQuest> =
         Specification { root, _, cb ->
             val pattern = "%${escapeForLike(text.trim().lowercase())}%"
@@ -39,7 +25,6 @@ object SideQuestSpecifications {
             )
         }
 
-    /** Otherwise a search for "100%" or "_" would match far more than the user meant. */
     private fun escapeForLike(text: String): String =
         text.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
 

@@ -16,6 +16,7 @@ class Destination(
     @Column(nullable = false, length = 150)
     var name: String,
 
-    @Column(length = 50)
-    var type: String? = null,
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    var type: DestinationType
 )

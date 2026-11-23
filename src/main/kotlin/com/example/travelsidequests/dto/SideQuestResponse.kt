@@ -1,24 +1,19 @@
 package com.example.travelsidequests.dto
 
-import com.example.travelsidequests.data.SideQuestStatus
 import java.math.BigDecimal
 import java.time.Instant
 
 data class SideQuestResponse(
     val id: Long,
-    val destination: DestinationResponse,
     val name: String,
     val description: String,
     val address: String?,
     val latitude: BigDecimal,
     val longitude: BigDecimal,
-    val websiteUrl: String?,
-    val status: SideQuestStatus,
-    /** Optional, unverified credit the submitter typed in. */
-    val submittedBy: String?,
     val createdAt: Instant,
     val updatedAt: Instant,
+    val destination: DestinationResponse,
     val categories: List<CategoryResponse>,
-    val sources: List<SourceResponse>,
-    val images: List<ImageResponse>
+    val sources: List<SideQuestSourceResponse>,
+    val images: List<SideQuestImageResponse>
 )

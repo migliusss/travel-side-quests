@@ -1,51 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
-/*
- * Three colours:
- *   Dark green #28301C  the primary — the only one of the three that can carry text
- *                       (14:1 on white) or hold a label as a button fill
- *   Pink       #FFC3CC  the signature — used as a fill with dark green type on top (11:1),
- *                       never as text on a light surface, where it is 1.3:1
- *   Lime       #D2DB76  the second accent, same rule (9.5:1 under dark green)
- *
- * The forest and moss steps are the given green lightened for secondary text; the paper
- * ground is a near-white with a green cast so nothing reads as a fourth hue.
- *
- * Danger is deliberately outside the palette. Errors have to look like errors, and pink
- * is the brand's happy colour here.
- */
 @theme {
-  --color-forest-900: #1b2113;
-  --color-forest-800: #28301c;
-  --color-forest-700: #3e4a2c;
-  --color-forest-600: #5c6749;
-  --color-forest-500: #76815f;
+  --color-lime-500: #a5be00;
+  --color-lime-300: #a5be00;
+  --color-lime-200: #bed14a;
+  --color-lime-100: #eef3c8;
+  --color-lime-50: #f6f9e6;
 
-  --color-pink-300: #f5a0b1;
-  --color-pink-200: #ffc3cc;
-  --color-pink-100: #ffdce2;
-  --color-pink-50: #fff2f4;
+  --color-sage-300: #d9dec2;
+  --color-sage-200: #d9dec2;
 
-  --color-lime-500: #a8b24e;
-  --color-lime-300: #d2db76;
-  --color-lime-200: #e3e9a8;
-  --color-lime-100: #eef2d0;
-  --color-lime-50: #f7f9e9;
+  --color-danger-700: #b42318;
+  --color-danger-50: #fdf0ef;
 
-  --color-sage-300: #cfd4bd;
-  --color-sage-200: #e0e3d4;
-
-  --color-danger-700: #8c2f39;
-  --color-danger-50: #fbeced;
-
-  --color-paper: #fafaf3;
+  --color-paper: #f6f9e6;
   --color-card: #ffffff;
 
-  --font-display: 'Georgia', 'Iowan Old Style', serif;
+  --font-display: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  --font-sans: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
 }
 
 @layer base {
   body {
+    font-family: var(--font-sans);
     background-color: var(--color-paper);
     color: var(--color-forest-800);
     -webkit-font-smoothing: antialiased;
