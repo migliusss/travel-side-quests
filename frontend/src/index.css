@@ -1,67 +1,111 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
-@import 'tailwindcss';
+:root {
+  --text: #6b6375;
+  --text-h: #08060d;
+  --bg: #fff;
+  --border: #e5e4e7;
+  --code-bg: #f4f3ec;
+  --accent: #aa3bff;
+  --accent-bg: rgba(170, 59, 255, 0.1);
+  --accent-border: rgba(170, 59, 255, 0.5);
+  --social-bg: rgba(244, 243, 236, 0.5);
+  --shadow:
+    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-@theme {
-  --color-lime-500: #a5be00;
-  --color-lime-300: #a5be00;
-  --color-lime-200: #bed14a;
-  --color-lime-100: #eef3c8;
-  --color-lime-50: #f6f9e6;
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
 
-  --color-sage-300: #d9dec2;
-  --color-sage-200: #d9dec2;
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 
-  --color-danger-700: #b42318;
-  --color-danger-50: #fdf0ef;
-
-  --color-paper: #f6f9e6;
-  --color-card: #ffffff;
-
-  --font-display: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-  --font-sans: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-}
-
-@layer base {
-  body {
-    font-family: var(--font-sans);
-    background-color: var(--color-paper);
-    color: var(--color-forest-800);
-    -webkit-font-smoothing: antialiased;
-  }
-
-  h1,
-  h2,
-  h3 {
-    font-family: var(--font-display);
-    color: var(--color-forest-900);
+  @media (max-width: 1024px) {
+    font-size: 16px;
   }
 }
 
-@layer components {
-  .field {
-    @apply w-full rounded-lg border border-sage-200 bg-card px-3 py-2 text-sm
-           text-forest-800 outline-none transition
-           placeholder:text-forest-500
-           focus:border-forest-700 focus:ring-2 focus:ring-lime-200;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #9ca3af;
+    --text-h: #f3f4f6;
+    --bg: #16171d;
+    --border: #2e303a;
+    --code-bg: #1f2028;
+    --accent: #c084fc;
+    --accent-bg: rgba(192, 132, 252, 0.15);
+    --accent-border: rgba(192, 132, 252, 0.5);
+    --social-bg: rgba(47, 48, 58, 0.5);
+    --shadow:
+      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }
 
-  .label {
-    @apply mb-1 block text-xs font-semibold tracking-wide text-forest-600 uppercase;
+  #social .button-icon {
+    filter: invert(1) brightness(2);
   }
+}
 
-  .btn-primary {
-    @apply rounded-lg bg-forest-800 px-4 py-2 text-sm font-semibold text-paper transition
-           hover:bg-forest-700 disabled:cursor-not-allowed disabled:opacity-50;
-  }
+body {
+  margin: 0;
+}
 
-  /* On the dark hero the primary button would vanish, so it inverts to the signature pink. */
-  .btn-signature {
-    @apply rounded-lg bg-pink-200 px-4 py-2 text-sm font-semibold text-forest-900 transition
-           hover:bg-pink-100 disabled:cursor-not-allowed disabled:opacity-50;
-  }
+#root {
+  width: 1126px;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  border-inline: 1px solid var(--border);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
 
-  .btn-ghost {
-    @apply rounded-lg border border-sage-200 px-4 py-2 text-sm font-semibold text-forest-700
-           transition hover:border-forest-700 hover:text-forest-900 disabled:opacity-50;
+h1,
+h2 {
+  font-family: var(--heading);
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+h1 {
+  font-size: 56px;
+  letter-spacing: -1.68px;
+  margin: 32px 0;
+  @media (max-width: 1024px) {
+    font-size: 36px;
+    margin: 20px 0;
   }
+}
+h2 {
+  font-size: 24px;
+  line-height: 118%;
+  letter-spacing: -0.24px;
+  margin: 0 0 8px;
+  @media (max-width: 1024px) {
+    font-size: 20px;
+  }
+}
+p {
+  margin: 0;
+}
+
+code,
+.counter {
+  font-family: var(--mono);
+  display: inline-flex;
+  border-radius: 4px;
+  color: var(--text-h);
+}
+
+code {
+  font-size: 15px;
+  line-height: 135%;
+  padding: 4px 8px;
+  background: var(--code-bg);
 }
